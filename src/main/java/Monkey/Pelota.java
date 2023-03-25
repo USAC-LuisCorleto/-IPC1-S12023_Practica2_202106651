@@ -1,5 +1,9 @@
 package Monkey;
 
+import static Monkey.MenúPrincipal.tiempoEmp;
+import static Monkey.MenúPrincipal.tiempoInv;
+import static Monkey.MenúPrincipal.tiempoProd;
+import static Monkey.MenúPrincipal.tiempoSal;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,6 +22,9 @@ public class Pelota extends JPanel implements Runnable {
     public JLabel labelTiempoTranscurrido;
     public JLabel labelTiempo;
     public JLabel labelActualEnInventario;
+    public JLabel labelActualEnProducción;
+    public JLabel labelActualEnEmpaquetado;
+    public JLabel labelActualEnSalida;
     public JButton botónRegresar;
     public JButton botónReportes;
 
@@ -56,6 +63,18 @@ public class Pelota extends JPanel implements Runnable {
         labelActualEnInventario = new JLabel("Inventario:");
         labelActualEnInventario.setBounds(566, 360, 80, 20);
         labelActualEnInventario.setFont(new Font("Dialog", Font.PLAIN, 14));
+        /*Label que indica la cantidad que hay actualmente en el proceso "Producción"*/
+        labelActualEnProducción = new JLabel("Producción:");
+        labelActualEnProducción.setBounds(566, 120, 100, 20);
+        labelActualEnProducción.setFont(new Font("Dialog", Font.PLAIN, 14));
+        /*Label que indica la cantidad que hay actualmente en el proceso "Empaquetado"*/
+        labelActualEnEmpaquetado = new JLabel("Empaquetado:");
+        labelActualEnEmpaquetado.setBounds(75, 120, 120, 20);
+        labelActualEnEmpaquetado.setFont(new Font("Dialog", Font.PLAIN, 14));
+        /*Label que indica la cantidad que hay actualmente en el proceso "Salida"*/
+        labelActualEnSalida = new JLabel("Salida:");
+        labelActualEnSalida.setBounds(75, 360, 80, 20);
+        labelActualEnSalida.setFont(new Font("Dialog", Font.PLAIN, 14));
 
         /*Rectángunlos para los procesos*/
  /*Inicio del hilo para el tiempo transcurrido*/
@@ -101,6 +120,9 @@ public class Pelota extends JPanel implements Runnable {
         add(labelTiempoTranscurrido);
         add(labelTiempo);
         add(labelActualEnInventario);
+        add(labelActualEnProducción);
+        add(labelActualEnEmpaquetado);
+        add(labelActualEnSalida);
         add(triánguloPanel);
         add(triánguloPanel2);
         add(inventarioPanel);
@@ -132,28 +154,162 @@ public class Pelota extends JPanel implements Runnable {
         g.drawLine(750, 315, 825, 315);
 
         /*Círculo que se movilizará por el panel*/
-        g.setColor(Color.red);
+//        g.setColor(Color.BLACK);
+//        g.drawOval(x, y, 30, 30);
+        g.setColor(Color.WHITE);
+
+        if (x == 571 && y == 385) {
+            g.setColor(new Color(20, 116, 228));
+        }
+        if (x == 635) {
+            g.setColor(new Color(20, 116, 228));
+        }
+        if (x == 571 && y == 145) {
+            g.setColor(new Color(84, 196, 92));
+        }
+        if (y == 165) {
+            g.setColor(new Color(84, 196, 92));
+        }
+        if (x == 80 && y == 145) {
+            g.setColor(new Color(228, 140, 252));
+        }
+        if (x == 245) {
+            g.setColor(new Color(228, 140, 252));
+        }
+        if (x == 80 && y == 385) {
+            g.setColor(new Color(252, 140, 140));
+        }
+        if (x == 145) {
+            g.setColor(new Color(252, 140, 140));
+        }
+        if (x <= 145 && x >= 0 && y >= 300 && y <= 310) {
+            g.setColor(new Color(252, 140, 140));
+        }
+
         g.fillOval(x, y, 30, 30);
     }
 
     @Override
     public void run() {
         while (true) {
+            /*Trayectoria desde el inicio hasta el final de la primera línea vertical*/
             x -= dx;
 
+            /*Pasa la quebrada y cambia su dirección de horizontal a vertical dirigiéndose hacia el panel de inventario*/
             if (x == 735) {
                 dx = 0;
                 dy = 1;
                 y += dy;
             }
 
-            if (y == 345) {
+            /*Verifica que la bola esté entrando al panel y se posiciona en determinada posición dentro del panel, además de que cambia de color a azul*/
+            if (y == 340 && x == 735) {
+                /*Cambio de posición*/
+                x = 571;
+                y = 385;
+                repaint();
+                /*Espera indicada en el menú*/
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(tiempoInv * 1000);
+
                 } catch (InterruptedException ex) {
 
                 }
+                /*Una vez termina el tiempo procede a cambiar de posición directo al otro panel "Producción"*/
+                x = 635;
+                y = 340;
+                repaint();
             }
+
+            /*Dándole velocidad de nuevo en dirección vertical directo al panel de producción*/
+            if (x == 635) {
+                dx = 0;
+                dy = 1;
+                y -= dy;
+            }
+
+            /*Verifica si está a punto de entrar al panel y de nuevo se teletransporta*/
+            if (x == 635 && y == 250) {
+                /*Cambio de posición*/
+                x = 571;
+                y = 145;
+                repaint();
+                /*Tiempo de espera indicado en el menú principal*/
+                try {
+                    Thread.sleep(tiempoProd * 1000);
+
+                } catch (InterruptedException ex) {
+
+                }
+                /*Una vez termina el tiempo procede a cambiar de posición directo al otro panel "Empaquetado"*/
+                x = 546;
+                y = 165;
+                dx = 1;
+                dy = 0;
+                repaint();
+            }
+
+            /*Verifica si está a punto de entrar al panel y de nuevo se teletransporta*/
+            if (y == 165 && x == 320) {
+                x = 80;
+                y = 145;
+                dx = 0;
+                repaint();
+                /*Tiempo de espera indicado en el menú principal*/
+                try {
+                    Thread.sleep(tiempoEmp * 1000);
+
+                } catch (InterruptedException ex) {
+
+                }
+                /*Una vez termina el tiempo procede a cambiar de posición directo al otro panel "Salida"*/
+                x = 245;
+                y = 255;
+                repaint();
+            }
+
+            /*Cambiando la dirección de horizontal a vertical hacia el panel salida*/
+            if (x == 245) {
+                dx = 0;
+                dy = 1;
+                y += dy;
+            }
+
+            /*Verirfica si la bola está a punto de entrar al panel y si teletransporta*/
+            if (x == 245 && y == 340) {
+                x = 80;
+                y = 385;
+                repaint();
+                /*Tiempo de espera indicado en el menú principal*/
+                try {
+                    Thread.sleep(tiempoSal * 1000);
+
+                } catch (InterruptedException ex) {
+
+                }
+                /*Una vez termina el tiempo de espera se telentranspo directo a la quebrada directo al final del recorrido*/
+                x = 145;
+                y = 340;
+                repaint();
+            }
+
+            /*Cambiando la orientación del recorrido a vertical*/
+            if (x == 145) {
+                dx = 0;
+                dy = 1;
+                y -= dy;
+            }
+
+            /*Cambiando la orientación cuando llegue a x=145 y que solo se mueva por y=300 por eso la doble condición
+            de lo contrario se movería horizontalmente desde el principio hasta el final sin tener el recorrido especificado*/
+            if (x == 145) {
+                if (y == 300) {
+                    dy = 0;
+                    dx = 1;
+                    x -= dx;
+                }
+            }
+
             repaint();
             try {
                 Thread.sleep(30);

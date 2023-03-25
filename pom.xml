@@ -11,4 +11,11 @@
         <maven.compiler.target>19</maven.compiler.target>
     </properties>
     <name>Monkey</name>
+    <dependencies>
+        <dependency>
+            <groupId>Interfaz</groupId>
+            <artifactId>JTatto</artifactId>
+            <version>1.6.13</version>
+        </dependency>
+    </dependencies>
 </project>

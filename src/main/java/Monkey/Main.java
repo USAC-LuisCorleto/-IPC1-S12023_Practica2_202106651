@@ -1,20 +1,23 @@
 package Monkey;
 
-import javax.swing.JFrame;
+import com.jtattoo.plaf.graphite.GraphiteLookAndFeel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class Main {
 
     public static void main(String[] args) {
-        
-        JFrame ventana = new JFrame("Pelota");
-        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ventana.setSize(900, 600);
-
-        Pelota pelota = new Pelota();
-
-        ventana.add(pelota);
-        ventana.setVisible(true);
-        ventana.setLocationRelativeTo(null);
-        
+        try {
+            UIManager.setLookAndFeel(new GraphiteLookAndFeel());
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(MenúPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        MenúPrincipal menu = new MenúPrincipal();
+        menu.setLocationRelativeTo(null);
+        menu.setVisible(true);
     }
+
 }
+
