@@ -1,16 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Monkey;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author LuisG
- */
 public class MenúPrincipal extends javax.swing.JFrame {
 
     public static int tiempoInv;
@@ -21,6 +13,7 @@ public class MenúPrincipal extends javax.swing.JFrame {
     public static int costoEmp;
     public static int costoProd;
     public static int costoSal;
+    public static JFrame ventana;
 
     public MenúPrincipal() {
         initComponents();
@@ -217,14 +210,14 @@ public class MenúPrincipal extends javax.swing.JFrame {
             this.setVisible(true);
             return;
         }
-        
-        JFrame ventana = new JFrame("Pelota");
+
+        this.setVisible(false);
+        ventana = new JFrame("Pelota");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setSize(900, 600);
 
-        Pelota pelota = new Pelota();
-
-        ventana.add(pelota);
+        Animación interfaz = new Animación();
+        ventana.add(interfaz);
         ventana.setVisible(true);
         ventana.setLocationRelativeTo(null);
     }//GEN-LAST:event_iniciaSimulaciónActionPerformed

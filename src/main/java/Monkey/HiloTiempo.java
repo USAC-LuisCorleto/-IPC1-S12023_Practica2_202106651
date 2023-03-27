@@ -7,13 +7,16 @@ public class HiloTiempo extends Thread {
     private int minutos;
     private int segundos;
     private JLabel tiempoLabel;
+    private boolean activo;
 
     public HiloTiempo(JLabel tiempoLabel) {
         this.tiempoLabel = tiempoLabel;
+        this.activo = true;
     }
 
+    @Override
     public void run() {
-        while (true) {
+        while (activo) {
             segundos++;
 
             if (segundos == 60) {
@@ -30,5 +33,9 @@ public class HiloTiempo extends Thread {
 
             }
         }
+    }
+    
+    public void detener(){
+        activo = false;
     }
 }
