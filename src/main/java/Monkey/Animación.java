@@ -1,5 +1,9 @@
 package Monkey;
 
+import static Monkey.HiloEmpaquetado.actualEnEmpaquetado;
+import static Monkey.HiloInventario.actualEnInventario;
+import static Monkey.HiloProducción.actualEnProducción;
+import static Monkey.HiloSalida.actualEnSalida;
 import static Monkey.MenúPrincipal.costoEmp;
 import static Monkey.MenúPrincipal.costoInv;
 import static Monkey.MenúPrincipal.costoProd;
@@ -40,7 +44,10 @@ public class Animación extends JPanel implements Runnable {
     public JButton botónReportes;
     public HiloTiempo hiloTiempo;
     public HiloInventario hiloInventario;
-    public boolean empezado = true;
+    public HiloProducción hiloProducción;
+    public HiloEmpaquetado hiloEmpaquetado;
+    public HiloSalida hiloSalida;
+    public static boolean seguir = false;
 
     public Animación() {
         Thread hilo = new Thread(this);
@@ -78,6 +85,8 @@ public class Animación extends JPanel implements Runnable {
                 int totalProducción = costoProd * tiempoProd * 30;
                 int totalEmpaquetado = costoEmp * tiempoEmp * 30;
                 int totalSalida = costoSal * tiempoSal * 30;
+                int total = totalInventario + totalProducción + totalEmpaquetado + totalSalida;
+
                 String contenido = "<html>\n"
                         + "<head>\n"
                         + "<title>Reporte MONKEY</title>\n"
@@ -100,12 +109,12 @@ public class Animación extends JPanel implements Runnable {
                         + "</style>\n"
                         + "<style>\n"
                         + "body, h1, h2, h3, h4, h5, h6 {\n"
-                        + "  font-size: 16px;\n"
-                        + "  font-family: Arial, sans-serif;\n"
+                        + "  font-size: 36px;\n"
+                        + "  font-family: 'Poppins', sans-serif;\n"
                         + "}\n"
                         + ".text-box {\n"
                         + "  border: 4px solid black;\n"
-                        + "  padding: 10px;\n"
+                        + "  padding: 12px;\n"
                         + "}\n"
                         + "</style>\n"
                         + "</head>\n"
@@ -129,6 +138,10 @@ public class Animación extends JPanel implements Runnable {
                         + "<td>" + totalEmpaquetado + "</td>\n"
                         + "<td>" + totalSalida + "</td>\n"
                         + "</tr>\n"
+                        + "<tr>"
+                        + "<th>" + "Total" + "</th>\n"
+                        + "<td colspan = 3>" + total + " - Luis Carlos Corleto Marroquín - 202106651" + "</td>\n"
+                        + "</tr>"
                         + "</tbody>\n"
                         + "</table>\n"
                         + "</body>\n"
@@ -169,14 +182,29 @@ public class Animación extends JPanel implements Runnable {
         labelActualEnProducción = new JLabel("Producción:");
         labelActualEnProducción.setBounds(566, 120, 100, 20);
         labelActualEnProducción.setFont(new Font("Dialog", Font.PLAIN, 14));
+        JLabel labelEnProducción = new JLabel();
+        labelEnProducción.setBounds(646, 120, 20, 20);
+        labelEnProducción.setFont(new Font("Dialog", Font.PLAIN, 14));
+        hiloProducción = new HiloProducción(labelEnProducción);
+        hiloProducción.start();
         /*Label que indica la cantidad que hay actualmente en el proceso "Empaquetado"*/
         labelActualEnEmpaquetado = new JLabel("Empaquetado:");
         labelActualEnEmpaquetado.setBounds(75, 120, 120, 20);
         labelActualEnEmpaquetado.setFont(new Font("Dialog", Font.PLAIN, 14));
+        JLabel labelEnEmpaquetado = new JLabel();
+        labelEnEmpaquetado.setBounds(170, 120, 20, 20);
+        labelEnEmpaquetado.setFont(new Font("Dialog", Font.PLAIN, 14));
+        hiloEmpaquetado = new HiloEmpaquetado(labelEnEmpaquetado);
+        hiloEmpaquetado.start();
         /*Label que indica la cantidad que hay actualmente en el proceso "Salida"*/
         labelActualEnSalida = new JLabel("Salida:");
         labelActualEnSalida.setBounds(75, 360, 80, 20);
         labelActualEnSalida.setFont(new Font("Dialog", Font.PLAIN, 14));
+        JLabel labelEnSalida = new JLabel();
+        labelEnSalida.setBounds(125, 360, 20, 20);
+        labelEnSalida.setFont(new Font("Dialog", Font.PLAIN, 14));
+        hiloSalida = new HiloSalida(labelEnSalida);
+        hiloSalida.start();
 
         /*Triángulos*/
  /*Triángulo de la derecha*/
@@ -217,6 +245,9 @@ public class Animación extends JPanel implements Runnable {
         add(labelTiempoTranscurrido);
         add(labelTiempo);
         add(labelEnInventario);
+        add(labelEnProducción);
+        add(labelEnEmpaquetado);
+        add(labelEnSalida);
         add(labelActualEnInventario);
         add(labelActualEnProducción);
         add(labelActualEnEmpaquetado);
@@ -302,6 +333,7 @@ public class Animación extends JPanel implements Runnable {
                 /*Cambio de posición*/
                 x = 571;
                 y = 385;
+                actualEnInventario++;
                 repaint();
                 /*Espera indicada en el menú*/
                 try {
@@ -313,6 +345,7 @@ public class Animación extends JPanel implements Runnable {
                 /*Una vez termina el tiempo procede a cambiar de posición directo al otro panel "Producción"*/
                 x = 635;
                 y = 340;
+                actualEnInventario--;
                 repaint();
             }
 
@@ -328,6 +361,7 @@ public class Animación extends JPanel implements Runnable {
                 /*Cambio de posición*/
                 x = 571;
                 y = 145;
+                actualEnProducción++;
                 repaint();
                 /*Tiempo de espera indicado en el menú principal*/
                 try {
@@ -341,6 +375,7 @@ public class Animación extends JPanel implements Runnable {
                 y = 165;
                 dx = 1;
                 dy = 0;
+                actualEnProducción--;
                 repaint();
             }
 
@@ -349,6 +384,7 @@ public class Animación extends JPanel implements Runnable {
                 x = 80;
                 y = 145;
                 dx = 0;
+                actualEnEmpaquetado++;
                 repaint();
                 /*Tiempo de espera indicado en el menú principal*/
                 try {
@@ -360,6 +396,7 @@ public class Animación extends JPanel implements Runnable {
                 /*Una vez termina el tiempo procede a cambiar de posición directo al otro panel "Salida"*/
                 x = 245;
                 y = 255;
+                actualEnEmpaquetado--;
                 repaint();
             }
 
@@ -374,6 +411,7 @@ public class Animación extends JPanel implements Runnable {
             if (x == 245 && y == 340) {
                 x = 80;
                 y = 385;
+                actualEnSalida++;
                 repaint();
                 /*Tiempo de espera indicado en el menú principal*/
                 try {
@@ -385,6 +423,7 @@ public class Animación extends JPanel implements Runnable {
                 /*Una vez termina el tiempo de espera se telentranspo directo a la quebrada directo al final del recorrido*/
                 x = 145;
                 y = 340;
+                actualEnSalida--;
                 repaint();
             }
 
@@ -419,5 +458,4 @@ public class Animación extends JPanel implements Runnable {
 
         }
     }
-
 }
